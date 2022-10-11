@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/beta_BurstDebugInformation_DoNotShip/tempburstlibs/armeabi-v7a
+/Library
+/ProjectSettings
+/Temp
+/UserSettings
+*.apk
