@@ -5,7 +5,7 @@ using UnityEngine;
 public class BaseBullet : MonoBehaviour
 {
     public float dmg;
-    public float speed = 3f;
+    public float speed = 5f;
     protected Enemy Target;
 
     public void DmgTarget(float Dmg, Enemy target)
@@ -23,11 +23,19 @@ public class BaseBullet : MonoBehaviour
     }
     public void Update()
     {
-         Vector3 vectorToTarget = Target.transform.position - transform.position;
-         float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
-         Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+        if (!Target.isDead)
+        {
+            var lookPos = Target.transform.position - transform.position;
+            float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg - 90f;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            //transform.LookAt(Target.transform, Vector3.forward);
+            //transform.Translate(vectorToTarget * speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, Target.transform.position, speed * Time.deltaTime);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
 
-         transform.rotation = Quaternion.RotateTowards(transform.rotation, q, Time.deltaTime*speed*10f);
-         transform.Translate(vectorToTarget * speed * Time.deltaTime);
     }
 }

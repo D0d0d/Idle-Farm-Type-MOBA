@@ -6,20 +6,11 @@ using System;
 public class Player : EntityWithStats
 {
     public Transform shootPos;
-    public GameObject bullet;
     // Start is called before the first frame update
-    public override void Atack()
-    {
-        if (FindTarget())
-        {
-            Vector3 dir = (shootPos.position - this.Target.transform.position).normalized;
 
-            dmg = Random.Range(dmg_base.Item1, dmg_base.Item2) + stats[main_stat];
-            if (isRanged) { Instantiate(bullet, shootPos.position, Quaternion.Euler(dir), transform).GetComponent<BaseBullet>().DmgTarget(dmg, Target); };
-        }
-    }
     void Start()
     {
+
         autoAtack = true;
         main_stat = Const._agi;
         stats[Const._str]=16; stats[Const._agi]=20; stats[Const._int]=15;
