@@ -8,13 +8,15 @@ public const string _str="str", _agi="agi", _int="int";
 }
 public class BaseEntity : MonoBehaviour
 {
+    public string side;
     public GameObject hpBar;
-    public CircleCollider2D AtackRadius;
+    public Transform Img;
     public GameObject bullet;
 
-    private HashSet<Enemy> _enemies = new HashSet<Enemy>();
-    protected Enemy Target;
+    public HashSet<BaseEntity> _enemies;
+    private BaseEntity Target;
 
+    public AtackObject AtackRadius;
 
     protected bool isAtacking;
     protected bool autoAtack;
@@ -41,55 +43,35 @@ public class BaseEntity : MonoBehaviour
     public void takeDamage(float dmg_)
     {
         hp -= dmg_;
-        Vector3 newBar = hpBar.transform.localScale;
-        newBar.x = hp / max_hp;
-        hpBar.transform.localScale = newBar;
+        if (hpBar!=null)
+        {
+            Vector3 newBar = hpBar.transform.localScale;
+            newBar.x = hp / max_hp;
+            hpBar.transform.localScale = newBar;
+        }
         if (hp < 0) { Destroy(this.gameObject); isDead = true; }
     }
     public bool FindTarget()
     {
-        if (Target.isDead||Target==null)
+        this.Target = AtackRadius.Target;
+        _enemies = AtackRadius._enemies;
+        if (Target == null||Target.isDead)
         {
-            Debug.Log("Finding target");
-            Debug.Log("Its " + this._enemies.Count.ToString());
-            float sqrLen = AtackRadius.radius*10f;
+            float sqrLen = AtackRadius.AtakRadius.radius*10f;
 
-            foreach (Enemy t in _enemies)
+            foreach (BaseEntity t in _enemies)
             {
                 float new_sqrLen = ( transform.position-t.transform.position ).sqrMagnitude;
-                Debug.Log(new_sqrLen.ToString());
                 if (new_sqrLen < sqrLen)
                 {
                     sqrLen = new_sqrLen;
                     this.Target = t;
-                    Debug.Log("Found new target!");
                 }
             }
         }
-        return !(Target.isDead || Target == null);
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-
-        if (collision.gameObject.tag == "Enemy")
-        {
-            Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-            _enemies.Add(enemy);
-            if (Target == null) { Target = enemy; }
-        }
-
+        return !(Target == null || Target.isDead);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-
-        if (collision.gameObject.tag == "Enemy")
-        {
-            _enemies.Remove(collision.gameObject.GetComponent<Enemy>());
-            if (Target == collision.gameObject) { Target = null; }
-
-        }
-    }
     public virtual float AddDamage()
     {
         return 0f;
@@ -104,7 +86,8 @@ public class BaseEntity : MonoBehaviour
         {
             Vector3 dir = (transform.position - this.Target.transform.position).normalized;
 
-            if (isRanged) { 
+            if (isRanged) {
+                Debug.Log("Im ranged");
                 Instantiate(bullet, transform.position, Quaternion.Euler(dir), transform).GetComponent<BaseBullet>().DmgTarget(DoDamage(), Target); 
             }else{
                 Target.takeDamage(DoDamage());
@@ -116,7 +99,7 @@ public class BaseEntity : MonoBehaviour
     {
         while (isAtacking)
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(atack_spd);
 
             if (isAtacking&&FindTarget())
             {

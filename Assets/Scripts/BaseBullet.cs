@@ -6,16 +6,16 @@ public class BaseBullet : MonoBehaviour
 {
     public float dmg;
     public float speed = 5f;
-    protected Enemy Target;
+    protected BaseEntity Target;
 
-    public void DmgTarget(float Dmg, Enemy target)
+    public void DmgTarget(float Dmg, BaseEntity target)
     {
         Target = target;
         dmg = Dmg;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<Enemy>() == Target)
+        if (collision.gameObject.GetComponent<BaseEntity>() == Target)
         {
             Target.takeDamage(dmg);
             Destroy(this.gameObject);

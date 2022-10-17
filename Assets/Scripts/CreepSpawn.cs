@@ -9,15 +9,14 @@ public class CreepSpawn : MonoBehaviour
     public GameObject Sword3;
     public GameObject Sword4;
     public GameObject Ranged;
-
+    public Transform Destination; 
     public void Spawn(GameObject sword, GameObject ranged, Transform _transform)
     {
-        Instantiate(sword, Sword1.transform.position, transform.rotation, _transform);
-        Instantiate(sword, Sword2.transform.position, transform.rotation, _transform);
-        Instantiate(sword, Sword3.transform.position, transform.rotation, _transform);
-        Instantiate(sword, Sword4.transform.position, transform.rotation, _transform);
-
-        Instantiate(ranged,Ranged.transform.position, transform.rotation, _transform);
+        Instantiate(sword, Sword1.transform.position, transform.rotation, _transform).GetComponent<LaneCreep>().Set(Destination, this.tag);
+        Instantiate(sword, Sword2.transform.position, transform.rotation, _transform).GetComponent<LaneCreep>().Set(Destination, this.tag);
+        Instantiate(sword, Sword3.transform.position, transform.rotation, _transform).GetComponent<LaneCreep>().Set(Destination, this.tag);
+        Instantiate(sword, Sword4.transform.position, transform.rotation, _transform).GetComponent<LaneCreep>().Set(Destination, this.tag);
+        Instantiate(ranged,Ranged.transform.position, transform.rotation, _transform).GetComponent<LaneCreep>().Set(Destination, this.tag);
     }
     // Start is called before the first frame update
     void Start()

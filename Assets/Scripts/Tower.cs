@@ -10,12 +10,13 @@ public class Tower : BaseEntity
     {
         autoAtack = true;
 
-        hp = 1800;
+        hp = 18000;
         armor = 12;
-
+        atack_spd = 1.5f;
         dmg_base = new Tuple<float, float>(88,92);
         isAtacking = true;
         StartCoroutine("AutoAtack");
+        side = this.tag;
 
 
     }
